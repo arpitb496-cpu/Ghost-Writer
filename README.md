@@ -1,102 +1,57 @@
-# 👻 GhostWriter
+# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
 
-> **Your voice. Your device. Forever private.**
+This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
 
-GhostWriter is a local-first AI writing assistant that learns your personal writing style from your own documents — then writes emails, messages, and content that sounds like **you**, not like ChatGPT.
+To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
 
-**Built for Monad Blitz 2026 · Problem Statement #1 (Web App)**
+## Project Overview
 
----
+This example project includes:
 
-## ✨ What Makes It Special
+- A simple Hardhat configuration file.
+- Foundry-compatible Solidity unit tests.
+- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
+- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
 
-- **Writing DNA** — Drop your old emails/notes and the AI extracts your unique style fingerprint
-- **100% On-Device** — All AI inference via WebAssembly. Zero cloud. Zero uploads.
-- **Style Mirror** — Side-by-side comparison: "Your Voice" vs "Generic AI"
-- **Instant & Private** — Sub-100ms responses after first load. Your data never leaves your browser.
-- **Offline Ready** — Works with no internet after models are cached
+## Usage
 
----
+### Running Tests
 
-## 🚀 Quick Start
+To run all the tests in the project, execute the following command:
 
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Add your Groq API key
-cp .env.example .env
-# Edit .env and supply your API key
-
-# 3. Run dev server (Frontend + Backend proxy)
-npm run dev
-
-# 4. Open http://localhost:5173
+```shell
+npx hardhat test
 ```
 
-### 🐳 Running with Docker
+You can also selectively run the Solidity or `node:test` tests:
 
-```bash
-# 1. Build the image
-docker build -t ghostwriter .
-
-# 2. Run the container
-docker run -p 3000:3000 --env GROQ_API_KEY=your_key_here ghostwriter
-
-# 3. Open http://localhost:3000
+```shell
+npx hardhat test solidity
+npx hardhat test nodejs
 ```
 
-> **Note:** Requires Chrome or Edge (WebGPU/WASM support). Firefox coming soon.
+### Make a deployment to Sepolia
 
----
+This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
 
-## 🛠️ Tech Stack
+To run the deployment to a local chain:
 
-| Layer | Tech |
-|---|---|
-| Local AI | RunAnywhere Web SDK (`@runanywhere/web-llamacpp`) |
-| Models | SmolLM2-135M (style extraction) + LFM2-350M (generation) |
-| Framework | React 18 + Vite 5 |
-| Language | TypeScript |
-| PDF Parsing | pdfjs-dist (browser WASM) |
-| Storage | localStorage + OPFS (Origin Private File System) |
-| Backend API Security | Node.js (Express) Proxy |
-| Deployment | Containerized (Docker) |
-
----
-
-## 📁 Project Structure
-
-```
-src/
-├── lib/
-│   ├── runanywhere.ts   # SDK init + model catalog
-│   ├── writingDNA.ts    # Style profile type + persistence
-│   ├── fileParser.ts    # Client-side PDF/TXT extraction
-│   └── aiService.ts     # DNA extraction + generation
-├── hooks/
-│   └── useSDK.ts        # SDK state React hook
-├── components/
-│   ├── FileDropZone     # Drag-drop file input
-│   ├── DNACard          # Writing DNA visualization
-│   ├── WriterPanel      # 3-mode writing interface
-│   └── ModelLoader      # Download progress display
-└── App.tsx              # Main layout
+```shell
+npx hardhat ignition deploy ignition/modules/Counter.ts
 ```
 
----
+To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
 
-## 🔒 Privacy
+You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
 
-- All file reading uses browser FileReader API — no uploads
-- AI models run via WebAssembly (compiled C++ llama.cpp)
-- Writing DNA stored in `localStorage` on your device only
-- Models cached in OPFS (browser's private file system)
-- **Zero network requests during inference**
+To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
 
----
+```shell
+npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+```
 
+After setting the variable, you can run the deployment with the Sepolia network:
 
-Built by **Hrithik** for Monad Blitz 2026  
-Category: Web App · Problem #1 (AI-Powered Productivity Tools)  
-SDK: [RunAnywhere](https://runanywhere.ai)
+```shell
+npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```
