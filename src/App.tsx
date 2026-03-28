@@ -7,6 +7,7 @@ import { useSDK } from './hooks/useSDK'
 import { FileDropZone } from './components/FileDropZone'
 import { DNACard } from './components/DNACard'
 import { SoulboundSection } from './components/SoulboundSection'
+import { StyleLeaderboardSection } from './components/StyleLeaderboardSection'
 import { WriterPanel } from './components/WriterPanel'
 import { ModelLoader } from './components/ModelLoader'
 
@@ -200,6 +201,8 @@ export default function App() {
             )}
 
             <SoulboundSection dna={dna} />
+
+            <StyleLeaderboardSection dna={dna} />
 
             {backend === 'local' && <ModelLoader />}
 

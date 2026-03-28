@@ -12,6 +12,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
+import { groqApiPlugin } from './vite-plugin-groq'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -46,16 +47,11 @@ const COEP_HEADERS = {
 }
 
 export default defineConfig({
-  plugins: [react(), copyWasmPlugin()],
+  // Groq proxy runs inside Vite (loadEnv reads .env) — no separate npm start needed for dev.
+  plugins: [groqApiPlugin(), react(), copyWasmPlugin()],
 
   server:  { 
     headers: COEP_HEADERS,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true
-      }
-    }
   },
   preview: { headers: COEP_HEADERS },
 
