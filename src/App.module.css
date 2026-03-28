@@ -91,6 +91,13 @@
   border: none;
 }
 
+.badgeSoulbound {
+  background: linear-gradient(135deg, rgba(124, 111, 205, 0.35), rgba(18, 16, 28, 0.95));
+  color: #e8e4ff;
+  border: 1px solid rgba(124, 111, 205, 0.55);
+  box-shadow: 0 0 16px rgba(124, 111, 205, 0.2);
+}
+
 /* ─── Main ─── */
 .main {
   flex: 1;

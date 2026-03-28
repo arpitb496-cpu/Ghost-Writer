@@ -6,6 +6,7 @@ import { useState, useCallback } from 'react'
 import { useSDK } from './hooks/useSDK'
 import { FileDropZone } from './components/FileDropZone'
 import { DNACard } from './components/DNACard'
+import { SoulboundSection } from './components/SoulboundSection'
 import { WriterPanel } from './components/WriterPanel'
 import { ModelLoader } from './components/ModelLoader'
 
@@ -119,6 +120,9 @@ export default function App() {
             <span className={`${styles.badge} ${styles.badgePrivate}`}>
               {backend === 'local' ? '🔒 Zero Cloud' : '🌐 OpenRouter Free'}
             </span>
+            <span className={`${styles.badge} ${styles.badgeSoulbound}`} title="Soulbound NFT on Monad testnet">
+              ◈ Soulbound
+            </span>
           </div>
         </div>
       </header>
@@ -194,6 +198,8 @@ export default function App() {
                 <DNACard dna={dna} onClear={handleClearDNA} />
               </div>
             )}
+
+            <SoulboundSection dna={dna} />
 
             {backend === 'local' && <ModelLoader />}
 

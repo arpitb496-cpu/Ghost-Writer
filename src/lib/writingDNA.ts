@@ -1,3 +1,5 @@
+import { keccak256, stringToBytes } from 'viem'
+
 /**
  * writingDNA.ts
  *
@@ -68,6 +70,32 @@ export function loadDNA(): WritingDNA | null {
 /** Clear Writing DNA (reset / start fresh) */
 export function clearDNA(): void {
   localStorage.removeItem(STORAGE_KEY)
+}
+
+/** Deterministic JSON for hashing (sorted keys / arrays for stable commitments). */
+export function canonicalWritingDNAJson(dna: WritingDNA): string {
+  const sorted = {
+    closingStyle: dna.closingStyle,
+    createdAt: dna.createdAt,
+    documentCount: dna.documentCount,
+    formality: dna.formality,
+    openingStyle: dna.openingStyle,
+    punctuationStyle: dna.punctuationStyle,
+    sentenceLength: dna.sentenceLength,
+    signatureWords: [...dna.signatureWords].sort((a, b) => a.localeCompare(b)),
+    structureLevel: dna.structureLevel,
+    summary: dna.summary,
+    toneDescriptors: [...dna.toneDescriptors].sort((a, b) => a.localeCompare(b)),
+    usesContractions: dna.usesContractions,
+    usesEmoji: dna.usesEmoji,
+    wordCount: dna.wordCount,
+  }
+  return JSON.stringify(sorted)
+}
+
+/** Keccak256 hash of the canonical profile — used for on-chain soulbound commitments. */
+export function hashWritingDNA(dna: WritingDNA): `0x${string}` {
+  return keccak256(stringToBytes(canonicalWritingDNAJson(dna)))
 }
 
 /**

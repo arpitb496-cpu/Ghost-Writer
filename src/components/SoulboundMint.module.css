@@ -1,0 +1,140 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-top: 4px;
+}
+
+.panelEmbedded {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(124, 111, 205, 0.35);
+  border-radius: 12px;
+  padding: 14px 14px 16px;
+  margin-top: 0;
+}
+
+.hashPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(124, 111, 205, 0.08);
+  border: 1px solid rgba(124, 111, 205, 0.25);
+}
+
+.hashLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+
+.hashCode {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleSm {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.desc {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.muted {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: var(--surface-elevated, rgba(0, 0, 0, 0.2));
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.walletLine {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--violet));
+  color: #fff;
+  width: 100%;
+}
+
+.primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ok {
+  font-size: 0.82rem;
+  color: var(--success);
+  margin: 0 0 10px;
+}
+
+.warn {
+  font-size: 0.82rem;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+.err {
+  font-size: 0.8rem;
+  color: #f87171;
+  margin: 10px 0 0;
+}
+
+.tx {
+  font-size: 0.78rem;
+  margin: 10px 0 0;
+  font-family: var(--font-mono);
+}
+
+.tx a {
+  color: var(--accent);
+}

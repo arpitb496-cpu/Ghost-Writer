@@ -41,5 +41,16 @@ export default defineConfig({
           ? [process.env.SEPOLIA_PRIVATE_KEY]
           : [],
     },
+    /** Monad Testnet — chain id 10143 */
+    monadTestnet: {
+      type: "http",
+      chainType: "l1",
+      url: process.env.MONAD_TESTNET_RPC_URL || "https://testnet-rpc.monad.xyz",
+      accounts:
+        process.env.MONAD_TESTNET_PRIVATE_KEY &&
+        process.env.MONAD_TESTNET_PRIVATE_KEY.startsWith("0x")
+          ? [process.env.MONAD_TESTNET_PRIVATE_KEY]
+          : [],
+    },
   },
 });
