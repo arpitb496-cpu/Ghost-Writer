@@ -1,0 +1,4 @@
+﻿src/App.tsx(11,1): error TS6133: 'RemoteSettings' is declared but its value is never read.
+src/App.tsx(100,9): error TS6133: 'handleRemoteSave' is declared but its value is never read.
+src/components/DynamicBackground.tsx(20,36): error TS6133: 'container' is declared but its value is never read.
+src/lib/aiService.ts(12,24): error TS6133: 'ModelCategory' is declared but its value is never read.

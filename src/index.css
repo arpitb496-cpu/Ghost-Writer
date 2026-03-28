@@ -1,0 +1,294 @@
+/* ============================================================
+   GhostWriter — Global Styles
+   Aesthetic: Dark editorial / writer's desk at 2am
+   Fonts: Syne (headers) + Instrument Serif (accents) + JetBrains Mono (code/DNA)
+   ============================================================ */
+
+@font-face {
+  font-family: 'Ndot57Caps-Regular';
+  src: url('/fonts/Ndot57Caps-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LetteraMono';
+  src: url('/fonts/LetteraMonoLL-Light.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Core palette — glassmorphism */
+  --bg: transparent;
+  --bg-card: rgba(20, 20, 24, 0.45);
+  --bg-elevated: rgba(28, 28, 34, 0.55);
+  --border: rgba(255, 255, 255, 0.15);
+  --border-soft: rgba(255, 255, 255, 0.08);
+
+  /* Text hierarchy */
+  --text-primary: #f0ede6;
+  /* warm off-white — easier on eyes than pure white */
+  --text-secondary: #8a8799;
+  --text-muted: #52505f;
+
+  /* Accent — spectral violet-gold */
+  --accent: #c9a84c;
+  /* warm gold */
+  --accent-glow: #c9a84c33;
+  --accent-dim: #8a7035;
+  --violet: #7c6fcd;
+  /* secondary accent */
+  --violet-soft: #7c6fcd22;
+
+  /* Status */
+  --success: #4caf7d;
+  --error: #e05c5c;
+  --warning: #d4833f;
+
+  /* Spacing */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Typography */
+  --font-header: 'Ndot57Caps-Regular', sans-serif;
+  --font-subheading: 'Ndot57Caps-Regular', sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-content: 'LetteraMono', monospace;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+html,
+body {
+  min-height: 100vh;
+  background-color: #050505;
+  color: var(--text-primary);
+  font-family: var(--font-content);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+/* ─── Focus ─── */
+:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Typography ─── */
+h1 {
+  font-family: var(--font-header);
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h2,
+h3,
+h4 {
+  font-family: var(--font-subheading);
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.serif {
+  font-family: var(--font-serif);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ─── Utility ─── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+/* ─── Noise texture overlay ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px;
+  z-index: 9999;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% center;
+  }
+
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.fade-up-delay-1 {
+  animation-delay: 0.05s;
+}
+
+.fade-up-delay-2 {
+  animation-delay: 0.10s;
+}
+
+.fade-up-delay-3 {
+  animation-delay: 0.15s;
+}
+
+.fade-up-delay-4 {
+  animation-delay: 0.20s;
+}
+
+/* ─── Card ─── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* ─── Button base ─── */
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Input base ─── */
+input,
+select {
+  font-family: var(--font-display);
+}
+
+textarea {
+  font-family: var(--font-header);
+}
+
+input,
+textarea,
+select {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  padding: 10px 14px;
+  width: 100%;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ─── Streaming text cursor ─── */
+.streaming-cursor::after {
+  content: '▋';
+  color: var(--accent);
+  animation: pulse-dot 0.8s ease-in-out infinite;
+}

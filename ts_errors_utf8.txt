@@ -1,0 +1,11 @@
+﻿src/App.tsx(23,20): error TS2307: Cannot find module './App.module.css' or its corresponding type declarations.
+src/components/BackendToggle.tsx(7,20): error TS2307: Cannot find module './BackendToggle.module.css' or its corresponding type declarations.
+src/components/DNACard.tsx(10,20): error TS2307: Cannot find module './DNACard.module.css' or its corresponding type declarations.
+src/components/FileDropZone.tsx(12,20): error TS2307: Cannot find module './FileDropZone.module.css' or its corresponding type declarations.
+src/components/ModelLoader.tsx(13,20): error TS2307: Cannot find module './ModelLoader.module.css' or its corresponding type declarations.
+src/components/RemoteSettings.tsx(16,20): error TS2307: Cannot find module './RemoteSettings.module.css' or its corresponding type declarations.
+src/components/WriterPanel.tsx(22,20): error TS2307: Cannot find module './WriterPanel.module.css' or its corresponding type declarations.
+src/lib/remoteAiService.ts(8,35): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/lib/remoteAiService.ts(107,5): error TS2322: Type 'string' is not assignable to type '"casual" | "professional" | "academic"'.
+src/lib/remoteAiService.ts(108,5): error TS2322: Type 'string' is not assignable to type '"short" | "medium" | "long"'.
+src/lib/remoteAiService.ts(116,5): error TS2322: Type 'string' is not assignable to type '"flowing" | "structured" | "heavily-structured"'.
