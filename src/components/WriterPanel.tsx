@@ -19,6 +19,9 @@ import {
   type FreeModelId,
 } from '../lib/remoteAiService'
 import { type Backend } from './BackendToggle'
+import { ContentAuthenticityStamp } from './ContentAuthenticityStamp'
+import { LiveSpeedFlex } from './LiveSpeedFlex'
+import { useLiveGenerationSpeed } from '../hooks/useLiveGenerationSpeed'
 import styles from './WriterPanel.module.css'
 
 type Mode = 'email' | 'message' | 'content'
@@ -64,6 +67,8 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
   const [showCompare, setShowCompare] = useState(false)
   const outputRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number | null>(null)
+  const voiceSpeed = useLiveGenerationSpeed()
+  const genericSpeed = useLiveGenerationSpeed()
 
   const canGenerate = sdkReady && prompt.trim().length > 10 && !isGenerating
 
@@ -99,19 +104,28 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
     setShowCompare(false)
     setMetrics(null)
     setStatus('')
+    voiceSpeed.reset()
 
     try {
       if (backend === 'remote') {
         await generateWithStyleRemote(
           prompt, mode, dna,
-          (token) => { setOutput((prev) => prev + token); scheduleScroll() },
+          (token) => {
+            voiceSpeed.bump()
+            setOutput((prev) => prev + token)
+            scheduleScroll()
+          },
           setStatus
         )
-        setMetrics({ tokensPerSecond: 0, latencyMs: 0 }) // remote doesn't give metrics
+        setMetrics({ tokensPerSecond: 0, latencyMs: 0 }) // remote doesn't give engine metrics
       } else {
         const result = await generateWithStyle(
           prompt, mode, dna,
-          (token) => { setOutput((prev) => prev + token); scheduleScroll() },
+          (token) => {
+            voiceSpeed.bump()
+            setOutput((prev) => prev + token)
+            scheduleScroll()
+          },
           setStatus
         )
         setMetrics(result)
@@ -122,25 +136,32 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
     } finally {
       setIsGenerating(false)
     }
-  }, [canGenerate, prompt, mode, dna, scheduleScroll, backend, apiKey, remoteModel])
+  }, [canGenerate, prompt, mode, dna, scheduleScroll, backend, apiKey, remoteModel, voiceSpeed.reset, voiceSpeed.bump])
 
   const handleCompare = useCallback(async () => {
     if (!output || isGeneratingGeneric) return
     setIsGeneratingGeneric(true)
     setShowCompare(true)
     setGenericOutput('')
+    genericSpeed.reset()
 
     try {
       if (backend === 'remote') {
         await generateGenericRemote(
           prompt, mode,
-          (token) => setGenericOutput((prev) => prev + token),
+          (token) => {
+            genericSpeed.bump()
+            setGenericOutput((prev) => prev + token)
+          },
           () => { }
         )
       } else {
         await generateGeneric(
           prompt, mode,
-          (token) => setGenericOutput((prev) => prev + token),
+          (token) => {
+            genericSpeed.bump()
+            setGenericOutput((prev) => prev + token)
+          },
           () => { }
         )
       }
@@ -149,7 +170,7 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
     } finally {
       setIsGeneratingGeneric(false)
     }
-  }, [output, isGeneratingGeneric, prompt, mode, backend, apiKey, remoteModel])
+  }, [output, isGeneratingGeneric, prompt, mode, backend, apiKey, remoteModel, genericSpeed.reset, genericSpeed.bump])
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(output)
@@ -208,25 +229,39 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
       {/* Output */}
       {(output || isGenerating) && (
         <div className={styles.outputSection} ref={outputRef}>
+          {!showCompare && (
+            <LiveSpeedFlex
+              label="Your voice"
+              liveTps={voiceSpeed.live}
+              peakTps={voiceSpeed.peak}
+              engineTps={backend === 'local' && metrics && metrics.tokensPerSecond > 0 ? metrics.tokensPerSecond : null}
+              engineLatencyMs={backend === 'local' && metrics && metrics.latencyMs > 0 ? metrics.latencyMs : null}
+              isStreaming={isGenerating}
+              backend={backend}
+            />
+          )}
           {showCompare ? (
             <CompareView
               yourOutput={output}
               genericOutput={genericOutput}
               isGeneratingGeneric={isGeneratingGeneric}
               metrics={metrics}
+              backend={backend}
+              voiceLive={voiceSpeed.live}
+              voicePeak={voiceSpeed.peak}
+              genericLive={genericSpeed.live}
+              genericPeak={genericSpeed.peak}
             />
           ) : (
             <div className={styles.outputCard}>
               <div className={styles.outputHeader}>
                 <div className={styles.outputMeta}>
                   <span className={styles.voiceBadge}>👤 Your Voice</span>
-                  {metrics && backend === 'local' && metrics.tokensPerSecond > 0 && (
-                    <span className={styles.metricsBadge}>
-                      {metrics.tokensPerSecond.toFixed(1)} tok/s · {metrics.latencyMs}ms · 🔒 on-device
-                    </span>
+                  {backend === 'local' && (
+                    <span className={styles.metricsBadge}>🔒 on-device</span>
                   )}
-                  {metrics && backend === 'remote' && (
-                    <span className={styles.metricsBadge}>🌐 via OpenRouter</span>
+                  {backend === 'remote' && (
+                    <span className={styles.metricsBadge}>🌐 remote</span>
                   )}
                 </div>
                 <div className={styles.outputActions}>
@@ -250,35 +285,73 @@ export function WriterPanel({ dna, sdkReady, backend = 'local', apiKey = '', rem
               </div>
             </div>
           )}
+          {output && !isGenerating && (
+            <ContentAuthenticityStamp
+              content={output}
+              dna={dna}
+              mode={mode}
+              visible
+            />
+          )}
         </div>
       )}
     </div>
   )
 }
 
-function CompareView({ yourOutput, genericOutput, isGeneratingGeneric, metrics }: {
+function CompareView({
+  yourOutput,
+  genericOutput,
+  isGeneratingGeneric,
+  metrics,
+  backend,
+  voiceLive,
+  voicePeak,
+  genericLive,
+  genericPeak,
+}: {
   yourOutput: string
   genericOutput: string
   isGeneratingGeneric: boolean
   metrics: { tokensPerSecond: number; latencyMs: number } | null
+  backend: 'local' | 'remote'
+  voiceLive: number
+  voicePeak: number
+  genericLive: number
+  genericPeak: number
 }) {
   return (
     <div className={styles.compareGrid}>
       <div className={styles.compareCard}>
+        <LiveSpeedFlex
+          compact
+          label="Your voice"
+          liveTps={voiceLive}
+          peakTps={voicePeak}
+          engineTps={backend === 'local' && metrics && metrics.tokensPerSecond > 0 ? metrics.tokensPerSecond : null}
+          engineLatencyMs={backend === 'local' && metrics && metrics.latencyMs > 0 ? metrics.latencyMs : null}
+          isStreaming={false}
+          backend={backend}
+        />
         <div className={styles.compareHeader}>
           <span className={styles.compareLabel} style={{ color: 'var(--accent)' }}>
             👤 Your Voice
           </span>
-          {metrics && (
-            <span className={styles.metricsBadge}>
-              {metrics.tokensPerSecond.toFixed(1)} tok/s
-            </span>
-          )}
         </div>
         <div className={styles.compareText}>{yourOutput}</div>
       </div>
 
       <div className={styles.compareCard}>
+        <LiveSpeedFlex
+          compact
+          label="Generic AI"
+          liveTps={genericLive}
+          peakTps={genericPeak}
+          engineTps={null}
+          engineLatencyMs={null}
+          isStreaming={isGeneratingGeneric}
+          backend={backend}
+        />
         <div className={styles.compareHeader}>
           <span className={styles.compareLabel} style={{ color: 'var(--text-muted)' }}>
             🤖 Generic AI
